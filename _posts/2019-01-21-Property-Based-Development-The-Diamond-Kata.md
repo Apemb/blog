@@ -187,8 +187,8 @@ E       E
 
 
 >
-## Fifth property
 ```
+## Fifth property
 The fith property states that flipping the diamond pattern vertically should yield the same pattern. 
 ```Haskell
 propVerticalSymmetry =
