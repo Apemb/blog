@@ -81,6 +81,9 @@ sharing_links: # Appear at the bottom of single blog posts, uncomment and commen
 
 # Build settings
 markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
 theme: alembic-jekyll-theme
 plugins:
   - jekyll-feed
@@ -106,4 +109,3 @@ exclude:
   - vendor/gems/
   - vendor/ruby/
 
-highlighter: rouge
