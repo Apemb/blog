@@ -45,7 +45,7 @@ Looking at the examples above, we can find interesting properties about the prog
 ## QuickCheck
 Using _QuickCheck_ is very simple. As an example, let's create a test harness and check different ways to obtain the index position of a letter in the alphabet. We use the `choose :: (a,a) -> Gen a` function, a generator that will allow for testing only chars from 'A' to 'Z' in our case.
 
-```Haskell
+```haskell
 -- Specs.hs -- 
 import Test.QuickCheck
 import Data.Char
@@ -69,7 +69,7 @@ runhaskell Specs.hs ⏎
 
 ## First property
 Now we can write a test for the first property : a diamond to the letter with position _n_ in the alphabet should be _2n-1_ rows long:
-```Haskell
+```haskell
 
 position maxLetter = length ['A'..maxLetter]
 
@@ -83,7 +83,7 @@ main = do
     quickCheck propSizeInRows
 ```
 And now we have to write a function `diamond` to make the test fail:
-```Haskell
+```haskell
 diamond :: Char -> [String]
 diamond _ = []
 ```
@@ -92,7 +92,7 @@ diamond _ = []
 'M'
 ```
 It's easy to make it pass: just fill the result with _2n-1_ empty lines.
-```Haskell
+```haskell
 diamond :: Char -> [String]
 diamond maxLetter = 
     let n = length ['A'..maxLetter]
@@ -100,14 +100,14 @@ diamond maxLetter =
 ```
 ## Second property
 The second property states that a diamond has a maximum of _2n-1_ cols.
-```Haskell
+```haskell
 propMaxSizeInCols =
     forAll letter $ \maxLetter ->
         let n = position maxLetter
         in maximum (map length (diamond maxLetter)) == 2 * n - 1
 ```
 And to make it pass, we just need fill each row with _2n-1_ spaces.
-```Haskell
+```haskell
 diamond :: Char -> [String]
 diamond maxLetter = 
     let n = length ['A'..maxLetter]
@@ -118,7 +118,7 @@ diamond maxLetter =
 ## Third property
 So far we have a function that yields a simple block of spaces, this block being of the right size to contain a diamond. This is not a lot, but it allowed to discover how to create lists with `replicate :: Int -> a -> [a]`. Let's now write a check for the third property: there should be a diagonal in the upper left corner of the diamond. This check is a bit more complicated, as it involves evaluting a predicate for all the elements of a list, and inspecting the diamond pattern at a given row and column.
 
-```Haskell
+```haskell
 propDiagonal = 
     forAll letter $ \maxLetter ->
         let d = diamond maxLetter
@@ -130,7 +130,7 @@ propDiagonal =
               ['A'..maxLetter]
 ```
 Making this test pass involves creating a diagonal with letters A,B,C.. at columns _n_-1, _n_-2,_n_-3, where _n_ is the index of the last letter. This can be done with `zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]`. Then this diagonal (which is only a quarter of the final result) is to be padded with empty lines so that our first and second properties still hold.
-```Haskell
+```haskell
 diamond :: Char -> [String]
 diamond maxLetter = 
     let n = length ['A'..maxLetter]
@@ -158,14 +158,14 @@ E
 ```
 ## Fourth property
 The fourth property states that flipping the diamond pattern horizontally should yield the same pattern. This check is easy to write.
-```Haskell
+```haskell
 propHorizontalSymmetry =
     forAll letter $ \maxLetter ->
         let d = diamond maxLetter
          in map reverse d == d
 ```
 For this test to pass, the diagonal should be mirrored in the upper right corner of the resulting pattern.  To make this change, create the diagonal in a space limited to half the total length and then map a function that will _mirror_ every line, where `mirror s = s ++ drop 1 (reverse s)` 
-```Haskell
+```haskell
 diamond :: Char -> [String]
 diamond maxLetter = 
     let n = length ['A'..maxLetter]
@@ -194,14 +194,14 @@ E       E
 ```
 ## Fifth property
 The fith property states that flipping the diamond pattern vertically should yield the same pattern. 
-```Haskell
+```haskell
 propVerticalSymmetry =
     forAll letter $ \maxLetter ->
         let d = diamond maxLetter
          in reverse d == d
 ```
 This change is really easy to make, as we already have the `mirror` function to help us:
-```Haskell
+```haskell
 diamond :: Char -> [String]
 diamond maxLetter =
    let n = length ['A'..maxLetter]
@@ -213,7 +213,7 @@ diamond maxLetter =
     in mirror topHalf 
 ```
 And now trying our function gives the following result:
-```Haskell
+```haskell
 > putStr (unlines (diamond 'E'))
     A
    B B
@@ -229,7 +229,7 @@ E       E
 ## Printing Diamonds
 All we need now is a program calling the function with a parameter taken on the command line:
 
-```Haskell
+```haskell
 import Diamond
 import System.Environment
 
