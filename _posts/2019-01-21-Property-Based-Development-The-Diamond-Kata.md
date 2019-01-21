@@ -200,7 +200,6 @@ This change is really easy to make, as we already have the `mirror` function to 
 ```Haskell
 diamond :: Char -> [String]
 diamond maxLetter = let n = length ['A'..maxLetter]
-                        t = 2 * n - 1
                         spaces x = replicate x ' '
                         format c p = spaces p ++ [c] ++ spaces (n - p - 1)
                         upperLeft = zipWith format ['A'..maxLetter] [n-1,n-2..]
