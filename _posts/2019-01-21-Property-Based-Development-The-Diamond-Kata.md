@@ -94,8 +94,9 @@ diamond _ = []
 It's easy to make it pass: just fill the result with _2n-1_ empty lines.
 ```Haskell
 diamond :: Char -> [String]
-diamond maxLetter = let n = length ['A'..maxLetter]
-                     in replicate (2 * n - 1) ""
+diamond maxLetter = 
+    let n = length ['A'..maxLetter]
+     in replicate (2 * n - 1) ""
 ```
 ## Second property
 The second property states that a diamond has a maximum of _2n-1_ cols.
@@ -108,10 +109,11 @@ propMaxSizeInCols =
 And to make it pass, we just need fill each row with _2n-1_ spaces.
 ```Haskell
 diamond :: Char -> [String]
-diamond maxLetter = let n = length ['A'..maxLetter]
-                        t = 2 * n - 1
-                        spaces x = replicate x ' '
-                    in replicate t (spaces t)
+diamond maxLetter = 
+    let n = length ['A'..maxLetter]
+        t = 2 * n - 1
+        spaces x = replicate x ' '
+     in replicate t (spaces t)
 ```
 ## Third property
 So far we have a function that yields a simple block of spaces, this block being of the right size to contain a diamond. This is not a lot, but it allowed to discover how to create lists with `replicate :: Int -> a -> [a]`. Let's now write a check for the third property: there should be a diagonal in the upper left corner of the diamond. This check is a bit more complicated, as it involves evaluting a predicate for all the elements of a list, and inspecting the diamond pattern at a given row and column.
@@ -130,13 +132,14 @@ propDiagonal =
 Making this test pass involves creating a diagonal with letters A,B,C.. at columns _n_-1, _n_-2,_n_-3, where _n_ is the index of the last letter. This can be done with `zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]`. Then this diagonal (which is only a quarter of the final result) is to be padded with empty lines so that our first and second properties still hold.
 ```Haskell
 diamond :: Char -> [String]
-diamond maxLetter = let n = length ['A'..maxLetter]
-                        t = 2 * n - 1
-                        spaces x = replicate x ' '
-                        format c p = spaces p ++ [c] ++ spaces (t - p - 1)
-                        topHalf = zipWith format ['A'..maxLetter] [n-1,n-2..]
-                        bottomHalf = replicate (n-1) (spaces t)
-                    in topHalf ++ bottomHalf
+diamond maxLetter = 
+    let n = length ['A'..maxLetter]
+        t = 2 * n - 1
+        spaces x = replicate x ' '
+        format c p = spaces p ++ [c] ++ spaces (t - p - 1)
+        topHalf = zipWith format ['A'..maxLetter] [n-1,n-2..]
+        bottomHalf = replicate (n-1) (spaces t)
+     in topHalf ++ bottomHalf
 ```
 
 When trying the `diamond` function with _ghci_ we get this (partial, yet promising) result:
@@ -164,15 +167,16 @@ propHorizontalSymmetry =
 For this test to pass, the diagonal should be mirrored in the upper right corner of the resulting pattern.  To make this change, create the diagonal in a space limited to half the total length and then map a function that will _mirror_ every line, where `mirror s = s ++ drop 1 (reverse s)` 
 ```Haskell
 diamond :: Char -> [String]
-diamond maxLetter = let n = length ['A'..maxLetter]
-                        t = 2 * n - 1
-                        spaces x = replicate x ' '
-                        format c p = spaces p ++ [c] ++ spaces (n - p - 1)
-                        upperLeft = zipWith format ['A'..maxLetter] [n-1,n-2..]
-                        mirror s = s ++ drop 1 (reverse s)
-                        topHalf = map mirror upperLeft
-                        bottomHalf = replicate (n-1) (spaces t)
-                    in topHalf ++ bottomHalf
+diamond maxLetter = 
+    let n = length ['A'..maxLetter]
+        t = 2 * n - 1
+        spaces x = replicate x ' '
+        format c p = spaces p ++ [c] ++ spaces (n - p - 1)
+        upperLeft = zipWith format ['A'..maxLetter] [n-1,n-2..]
+        mirror s = s ++ drop 1 (reverse s)
+        topHalf = map mirror upperLeft
+        bottomHalf = replicate (n-1) (spaces t)
+     in topHalf ++ bottomHalf
 ```
 And now a trial run gives the following result:
 ```
@@ -199,13 +203,14 @@ propVerticalSymmetry =
 This change is really easy to make, as we already have the `mirror` function to help us:
 ```Haskell
 diamond :: Char -> [String]
-diamond maxLetter = let n = length ['A'..maxLetter]
-                        spaces x = replicate x ' '
-                        format c p = spaces p ++ [c] ++ spaces (n - p - 1)
-                        upperLeft = zipWith format ['A'..maxLetter] [n-1,n-2..]
-                        mirror s = s ++ drop 1 (reverse s)
-                        topHalf = map mirror upperLeft
-                    in mirror topHalf 
+diamond maxLetter =
+   let n = length ['A'..maxLetter]
+       spaces x = replicate x ' '
+       format c p = spaces p ++ [c] ++ spaces (n - p - 1)
+       upperLeft = zipWith format ['A'..maxLetter] [n-1,n-2..]
+       mirror s = s ++ drop 1 (reverse s)
+       topHalf = map mirror upperLeft
+    in mirror topHalf 
 ```
 And now trying our function gives the following result:
 ```Haskell
