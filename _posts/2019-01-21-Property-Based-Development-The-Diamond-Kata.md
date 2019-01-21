@@ -235,7 +235,7 @@ import System.Environment
 
 main = do
     letter <- fmap (head . head) getArgs
-    putStr $ unlines $ diamond letterHaskell
+    putStr $ unlines $ diamond letter
 ```
 
 And we are done :-)
