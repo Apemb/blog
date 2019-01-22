@@ -10,9 +10,6 @@ As you may know, Rust is a pet peve of mine. I code in Rust since 2015 and I can
 I also enjoy teaching Rust to my curious friends and colleagues. In this post, I'd like to share with you the usual tips I dispense for them to start with less hassle.
 
 
-[TOC]
-
-
 ## General Tips
 
 ### Code in Rust stable

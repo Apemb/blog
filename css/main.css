@@ -1,5 +1,0 @@
-@import url(monokai.css)
-{% highlight haskell %}
-x = ('a', 1, False)
-{% endhighlight %}
-

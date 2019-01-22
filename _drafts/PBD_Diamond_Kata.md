@@ -1,4 +1,11 @@
-# Property Based coding The diamond kata
+---
+layout: post
+title:  "Property Based coding The diamond kata"
+date:   2019-01-21 21:29:25 +0100
+categories: kata haskell coding
+toc: true
+---
+
 ## Let's print diamonds
 The diamond kata is a well known exercise in TDD. Here's a description copied from http://cyber-dojo.org:
 
@@ -27,7 +34,7 @@ For example: print-diamond 'A' prints
 
     A
 
-We want to write such a program following the Test Driven Development way, but using Property Based tests instead of usual test cases. 
+We want to write such a program following the Test Driven Development way, but using Property Based tests instead of usual test cases.
 
 ## Properties Todo List
 Looking at the examples above, we can find interesting properties about the program results:
@@ -46,14 +53,14 @@ Looking at the examples above, we can find interesting properties about the prog
 Using _QuickCheck_ is very simple. As an example, let's create a test harness and check different ways to obtain the index position of a letter in the alphabet. We use the `choose :: (a,a) -> Gen a` function, a generator that will allow for testing only chars from 'A' to 'Z' in our case.
 
 ```haskell
--- Specs.hs -- 
+-- Specs.hs --
 import Test.QuickCheck
 import Data.Char
 
 letter = choose ('A','Z')
 
-propLetterIndex = 
-    forAll letter $ \maxLetter -> 
+propLetterIndex =
+    forAll letter $ \maxLetter ->
         let position = length ['A'..maxLetter]
             order    = ord maxLetter - ord (pred 'A')
         in order == position
@@ -61,14 +68,18 @@ propLetterIndex =
 main = do
     quickCheck propLetterIndex
 ```
+
 Running our test program will show that this equality is valid for 100 random choices of a letter:
-```
+
+```bash
 runhaskell Specs.hs ⏎
 +++ OK, passed 100 tests.
 ```
 
 ## First property
+
 Now we can write a test for the first property : a diamond to the letter with position _n_ in the alphabet should be _2n-1_ rows long:
+
 ```haskell
 
 position maxLetter = length ['A'..maxLetter]
@@ -94,7 +105,7 @@ diamond _ = []
 It's easy to make it pass: just fill the result with _2n-1_ empty lines.
 ```haskell
 diamond :: Char -> [String]
-diamond maxLetter = 
+diamond maxLetter =
     let n = length ['A'..maxLetter]
      in replicate (2 * n - 1) ""
 ```
@@ -109,7 +120,7 @@ propMaxSizeInCols =
 And to make it pass, we just need fill each row with _2n-1_ spaces.
 ```haskell
 diamond :: Char -> [String]
-diamond maxLetter = 
+diamond maxLetter =
     let n = length ['A'..maxLetter]
         t = 2 * n - 1
         spaces x = replicate x ' '
@@ -119,7 +130,7 @@ diamond maxLetter =
 So far we have a function that yields a simple block of spaces, this block being of the right size to contain a diamond. This is not a lot, but it allowed to discover how to create lists with `replicate :: Int -> a -> [a]`. Let's now write a check for the third property: there should be a diagonal in the upper left corner of the diamond. This check is a bit more complicated, as it involves evaluting a predicate for all the elements of a list, and inspecting the diamond pattern at a given row and column.
 
 ```haskell
-propDiagonal = 
+propDiagonal =
     forAll letter $ \maxLetter ->
         let d = diamond maxLetter
             n = position maxLetter
@@ -132,7 +143,7 @@ propDiagonal =
 Making this test pass involves creating a diagonal with letters A,B,C.. at columns _n_-1, _n_-2,_n_-3, where _n_ is the index of the last letter. This can be done with `zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]`. Then this diagonal (which is only a quarter of the final result) is to be padded with empty lines so that our first and second properties still hold.
 ```haskell
 diamond :: Char -> [String]
-diamond maxLetter = 
+diamond maxLetter =
     let n = length ['A'..maxLetter]
         t = 2 * n - 1
         spaces x = replicate x ' '
@@ -164,10 +175,10 @@ propHorizontalSymmetry =
         let d = diamond maxLetter
          in map reverse d == d
 ```
-For this test to pass, the diagonal should be mirrored in the upper right corner of the resulting pattern.  To make this change, create the diagonal in a space limited to half the total length and then map a function that will _mirror_ every line, where `mirror s = s ++ drop 1 (reverse s)` 
+For this test to pass, the diagonal should be mirrored in the upper right corner of the resulting pattern.  To make this change, create the diagonal in a space limited to half the total length and then map a function that will _mirror_ every line, where `mirror s = s ++ drop 1 (reverse s)`
 ```haskell
 diamond :: Char -> [String]
-diamond maxLetter = 
+diamond maxLetter =
     let n = length ['A'..maxLetter]
         t = 2 * n - 1
         spaces x = replicate x ' '
@@ -193,7 +204,7 @@ E       E
 >
 ```
 ## Fifth property
-The fith property states that flipping the diamond pattern vertically should yield the same pattern. 
+The fith property states that flipping the diamond pattern vertically should yield the same pattern.
 ```haskell
 propVerticalSymmetry =
     forAll letter $ \maxLetter ->
@@ -210,7 +221,7 @@ diamond maxLetter =
        upperLeft = zipWith format ['A'..maxLetter] [n-1,n-2..]
        mirror s = s ++ drop 1 (reverse s)
        topHalf = map mirror upperLeft
-    in mirror topHalf 
+    in mirror topHalf
 ```
 And now trying our function gives the following result:
 ```haskell
@@ -294,5 +305,3 @@ Z                                                 Z
                         B B
                          A
 ```
-
-
