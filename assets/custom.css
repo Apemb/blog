@@ -1,0 +1,13 @@
+
+.typeset code, .typeset pre {
+	background-color: #272822 !important;
+	color: #fafafa !important;
+}
+
+.highlight span.n {
+	color: #68e1ff;
+}
+
+.highlight span.o {
+	color: #cac300;
+}
