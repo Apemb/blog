@@ -3,13 +3,24 @@ layout: post
 title:  "Property Based coding The diamond kata"
 date:   2019-01-26 21:29:25 +0100
 categories: kata haskell coding
-toc: true
+toc: false
 ---
-In this post I show an example of solving a kata the TDD way, i.e. following the 3-step cycle (_red_, _green_, _refactor_), only I will be using a property based testing tool instead of usual test cases. Property Based Testing consists in making statements about the output of a function based on the input, and checking that these statements are true for many different possible inputs. It can be used to _find errors in a function that is already coded_. In this exercise, I am using PBT to _incrementally build_ the function, following the 3 step cycle of TDD.
+
+In this post I show an example of solving a kata the TDD way, while using a Property Based Testing tool. 
+
+_Test Driven Development_ is a programming pattern based on the short feedback cycle :
+
+- _Red_: write a test that fails.
+- _Green_: write the simplest code that makes the test pass.
+- _Refactor_: remove duplication.
+
+_Property Based Testing_ is a testing pattern consisting in making statements about the function of a function based on the input, and checking that these statements are true for many different possible inputs. It is generally used to find problem in a function that is already designed. 
+
+In the following exercise, I am using  _QuickCheck_ to describe properties of a function, while designing the function one property at a time. My interest in doing so is around the question: can we use a design approach based on _building_ incrementally some code with the help of a testing tool made for _criticizing_ existing code ?
 
 ## Let's print diamonds
-The diamond kata is a well known exercise. 
-Given a letter, print a diamond starting with 'A' with the supplied letter at the widest point.
+
+The diamond kata is a well known exercise. Given a letter, print a diamond starting with 'A' with the supplied letter at the widest point.
 
 Here are three examples: 
 ```
@@ -27,14 +38,14 @@ output     A       A               A
 ```
 We want to write a program that prints a diamond in this fashion, while following the Test Driven Development way, using Property Based tests instead of usual test cases. 
 
-## Properties Todo List
-Looking at the third example above (`diamond 'E'`), we can find interesting properties about the program results:
+### Properties Todo List
+Looking at the third example above (`diamond 'E'`), we can find interesting properties about the output:
 
 - The top left corner of the pattern consist in a diagonal formed with the letters A,B,C,D,E, which is replicated (and possibly reversed) in the other corners of the pattern.
 - There is vertical symmetry in the pattern, meaning that reversing the pattern will produce the same pattern.
 - There is horizontal symmetry in the pattern, meaning that reversing all the lines will produce the same pattern.
-- The central line of the pattern is not duplicated, meaning that the top half of the pattern is 1 line shorter than the bottom half.
-- The central column of the pattern is not duplicated, meaning that the left half of the pattern is 1 column shorter than the right half.
+- The central line of the pattern is not duplicated, meaning that the top "half" of the pattern is always one line longer than the bottom "half".
+- The central column of the pattern is not duplicated, meaning that the left "half" of the pattern is 1 column longer than the right "half".
 
 ## Discovering QuickCheck
 ### Checking for a single boolean value
@@ -232,12 +243,15 @@ diamond l =
 The second property of the diamond pattern is stated thusly:
 - There is vertical symmetry in the pattern, meaning that reversing the pattern will produce the same pattern.
 It is very easy to implement in Haskell:
+
 ```Haskell
 propVerticalSymmetry = 
     forAll letter $ \l ->
         reverse (diamond l) == diamond l
 ```
+
 And making it pass is easy too:
+
 ```Haskell
 diamond :: Char -> [String]
 diamond l = 
@@ -248,16 +262,19 @@ diamond l =
         half = zipWith format letters [0..max]
      in half ++ reverse half
 ```
+
 Of course this is not yet satisfactorily, as a quick manual test in _ghci_ will confirm:
+
 ```
 > putStrLn $ unlines $ diamond 'C' ⏎
-  A
- B
-C
-C
- B
+  A 
+ B 
+C  
+C  
+ B 
   A
 ```
+
 But we will adjust this when we'll take care of the last properties.
 ## The third property : horizontal symmetry
 Here's the third property
@@ -302,11 +319,11 @@ diamond l =
         mirror s = s ++ (reverse s)
      in mirror (map mirror diagonal)
 ```
-## The final property : no duplication on the central column (or line)
+## The last property : no duplication on the central column (or line)
 Since things are simple enough, we can aggregate the fourth and fifth properties into one:
 - The central line and column of the pattern are not duplicated, meaning that the top half of the pattern is 1 line shorter than the bottom half, and the left half of the pattern is 1 column shorter than the right half.
 
-A very straightforward way to state that this property is the following:
+An even better way very to state that this property is the following:
 - Given that all the previous properties hold, the number of lines and the number of columns in the pattern should be odd, not even. Precisely, it should be equal to _2l-1_ where _l_ is the length of the sequence {A,B,C,…,_m_} and _m_ is the maximum letter of the pattern.
 
 ```Haskell

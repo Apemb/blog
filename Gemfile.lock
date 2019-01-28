@@ -62,6 +62,8 @@ GEM
       jekyll (~> 3.3)
     jekyll-sitemap (0.13.0)
       jekyll (~> 3.3)
+    jekyll-toc (0.9.1)
+      nokogiri (~> 1.8)
     jekyll-watch (2.1.2)
       listen (~> 3.0)
     jemoji (0.10.1)
@@ -114,9 +116,10 @@ DEPENDENCIES
   jekyll-redirect-from (~> 0.12)
   jekyll-seo-tag (~> 2.5)
   jekyll-sitemap (~> 0.13)
+  jekyll-toc
   jemoji (~> 0.9)
   minima (~> 2.0)
   tzinfo-data
 
 BUNDLED WITH
-   1.16.6
+   2.0.1

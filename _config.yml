@@ -86,6 +86,7 @@ kramdown:
   syntax_highlighter: rouge
 theme: alembic-jekyll-theme
 plugins:
+  - jekyll-toc
   - jekyll-feed
   - jekyll-seo-tag
   - jekyll-sitemap
