@@ -1,5 +1,5 @@
 ---
-layout: post
+fn layout: post
 author: thomas_wickham
 title:  "Tips for Rust beginners"
 date:   2019-01-18 22:00:00 +0100
@@ -137,29 +137,153 @@ The Rust compiler prevents these kind of errors by tracking lifetimes, and these
 
 The best way not to see them is to own your data. For that, use owned types (`String` over `&str`), don't use references, and don't be afraid to clone the data when constructing your structs.
 
-### Prefer templating to boxed traits
+### Prefer templating to dynamic traits (boxed traits)
 
-Here is a code with a template:
+Here is some code with templates:
 
 ```rust
+// using straight templates
 fn to_string<TS: ToString>(arg: TS) -> String {
     arg.to_string()
 }
+
+// using impl traits
+fn to_string2(arg: impl ToString) -> String {
+    arg.to_string()
+}
 ```
 
-And here is a code with a boxed trait:
+And here is a code with a dynamic trait:
 
 ```rust
-fn to_string(arg: &ToString) -> String {
+
+fn to_string(arg: &dyn ToString) -> String {
     arg.to_string()
 }
 ```
 
 
 
-So what's the difference ? Not much
+So what's the difference ? Not much for your. In both case your function has access to the same methods. In both cases you don't know what is the original type.
+
+For the compiler it's another story. The template way to write thing will be unrolled for each use of the function, and may help rustc to compute the lifetimes of your variables.
+
+I tend to recommend to use templates as much as possible as they have few negative trade-offs and will make clearers and fewer errors.
+
+_Note1: before Rust 2018, `&dyn ToString` was written `&ToString` and was named a boxed trait_
+
+_Note2: `impl ToString` is an advanced part of the language that I don't recommend you to use until you need it, which is when you need to return a type that you don't know yet but implements a trait. Futures are a good example of this. This makes messy errors that are hard to debug if your are new to Rust._
+
+### If rustc tells you “unknown type size”, try templating. If it don’t work, use reference
+
+I won't go into details here but you can have this kind of errors:
+
+```rust
+fn my_func(array: [u8]) {
+//         ^^^^^ doesn't have a size known at compile-time
+}
+```
+
+You simply have to add a reference like that:
+
+```rust
+fn my_func(array: &[u8]) {}
+```
+
+Or make the type known at compile-time with a template:
+
+```rust
+fn my_func1<Array>(array: Array) {}
+```
 
 
+
+### Methods: first `&self`, then `&mut self`, then `self`
+
+When you are making a method:
+
+```rust
+struct Foo;
+impl Foo {
+    fn method0() {} 		 // 0: no self, it's a static function
+    fn method1(&self) {}     // 1: &self: method borrowing by reference
+    fn method2(&mut self) {} // 2: &mut self: method borrowing mutably
+    fn method3(self) {}      // 3: self: method consuming itself
+}
+```
+
+
+
+`method0` is not a method, so don't forget to add the special `sefl` argument.
+
+`method1` is borrowing the instance for a read-only use of the attributes. Nothing to see here.
+
+`method2` is the same, but you can change (mutate) the attributes of the instance. Rustc will make sure that only one `&mut` to your instance is hold, which don't means much here so it's no big deal. The compiler will tell you when you need to add the `mut`. With time, you will be able to see them before the compiler errors.
+
+`method3` consume itself, what it means is that you won't be able to use your object (or struct instance) after. This is useful only for unsafe operations or when you are a Rust wizard building a very fancy API. In which case you don't really need to read this article and your feedback is appreciated. :)
+You should never have the use accidentally of `method3(self)`. Either it's by design and you know why you are doing it, either you didn't designed it as such and in this case you can safely avoid it.
+
+### Never ever use Rc, Arc, Cell, RefCell, UnsafeCell. If you do, you are probably doing it wrong
+
+You may need them, but most probably you are making an unsafe design and are currently fighting the borrow-checker.
+
+If you are safe-gating a simple primitive type, you should use [the atomic package](https://doc.rust-lang.org/std/sync/atomic/) which will give you a thread-safe API over the data.
+
+[expand the description why is it fighting the borrowck ? how to solve ?]
+
+
+
+### Atomics (std::sync::atomic) are great. Use them at will 
+
+Atomics are special types that are supported by all the classic CPU and provide special garnatees around thread-safety.
+
+If you ever need to design a concurrent system, I highly encourage you to look at the [the std::sync::atomic package](https://doc.rust-lang.org/std/sync/atomic/) and use it as a base primitive for your structs.
+
+### Learn the multiple methods of Result and Option and use them
+
+These two types are really great and provides lots and lots of useful methods for composability.
+
+Here are handful links to the doc: [the std::result module](https://doc.rust-lang.org/std/result/index.html) gives nice information about the usage, but the real nuggets are in [the Result type documentation](https://doc.rust-lang.org/std/result/enum.Result.html). It's the same for [the std::option module](https://doc.rust-lang.org/std/option/index.html) and [the Option type documentation](https://doc.rust-lang.org/std/option/enum.Option.html).
+
+Take your time to dive into it. Here is a nice example of Result composability: [(Source, the whole article is a gold mine which I encourage you to read)](https://blog.burntsushi.net/rust-error-handling/#composing-option-and-result)
+
+```rust
+use std::env;
+
+// Result<OkType, ErrorType> is here either an int, either an error String
+fn double_arg(mut argv: env::Args) -> Result<i32, String> {
+    argv.nth(1)
+        .ok_or("Please give at least one argument".to_owned())
+        .and_then(|arg| arg.parse::<i32>().map_err(|err| err.to_string()))
+}
+
+fn main() -> Result<(), Error> {
+	let n = double_arg(env::args())?;
+	println!("{}", n)
+}
+```
+
+
+
+### Prefer Vec\<T\> rather than raw arrays
+
+They own their data, can grow, and as such are far easier to work with.
+
+Do I really need to expand ?
+
+### Don't return an Iterator, a Vec is easier
+
+You may want to protif from the lazyness iterators gives you and do the same.
+
+The thing is, returning an iterator is an advanced topic. Try it for fun if you may, but it's not easy to deal to deal with the errors. Allocating a vector is probably fine.
+
+### Learn the From trait and the conversion methods
+
+As Rust is strongly typed, and types are easy to create. That's why you want to be abble to convert easily your data between types.
+
+[Documentation of the From trait](https://doc.rust-lang.org/std/convert/trait.From.html)
+
+[expand on the handy methods, automatic Into, what to from and what to Into]
 
 
 
@@ -170,3 +294,29 @@ There are many other tips I could give, but that would be for another article.
 Please remember to keep things simple and don’t add imaginary requirements. Indeed, performance is cool, but how do you know there is a problem if you can’t run your program ? How do you know that the code your are improving gives a better performance if you can’t measure it ?
 
 In Rust, “_done is better than perfect_” is a mantra to follow. Especially with all the shiny features the language can provide.
+
+
+
+
+
+***
+
+
+
+Other topics to expand to:
+
+Understand Iterators
+Lazy
+Termination methods
+Scope retention —> hard to understand
+Use closures as primitives, not as a trait
+As argument, always templated. No choice
+Learn when too flee away
+Trait for
+Double borrow
+Use <S: Into<String>> for string genericity
+Performance can be dealt with later with ease when it works. It can destroy your code if it don’t
+Testing tips
+Declare your own traits for mocking and implement them in a dummy struct for your tests
+Cursor<T> on a Vec or on a String emulate very well a Read or a Write
+Tests helpers for simplifying setups and assertions
