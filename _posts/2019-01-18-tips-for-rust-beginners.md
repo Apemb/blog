@@ -11,7 +11,7 @@ As you may know, Rust is one of my favorite tools. I've been writing code in Rus
 
 I also enjoy teaching Rust to my curious friends and colleagues. In this post, I'd like to share with you the usual tips I dispense for them to start with less hassle.
 
-_Thanks to Nitlelave and SerialK for their multiple reviews._
+_Thanks to Nitlelave for his multiple reviews._
 
 
 
