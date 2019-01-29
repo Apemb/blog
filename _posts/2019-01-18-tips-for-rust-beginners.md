@@ -19,7 +19,7 @@ _Thanks to Nitlelave and SerialK for their multiple reviews._
 
 ### Use Rustup
 
-The Rust toolchain installer is named rustup, and it works so well I don't see any reason not to use it. See https://rustup.rs/.
+The Rust toolchain installer is named rustup, and it works so well I don't see any reason not to use it. See [rustup.rs](https://rustup.rs/).
 
 ### Use Rust stable and avoid nightly
 
