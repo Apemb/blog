@@ -1,0 +1,39 @@
+---
+---
+
+.typeset {
+	& code, & pre {
+		background-color: #272822 !important;
+		color: #fafafa !important;
+	}
+}
+
+.highlight {
+	& span.n {
+		color: #68e1ff;
+	}
+
+	span.o {
+		color: #cac300;
+	}
+}
+
+.author {
+	color: #8e8e8e;
+	font-size: 1rem;
+	margin-bottom: 0px !important;
+	
+	&, * {
+		vertical-align: middle;
+	}
+	
+	& img {
+		height: 2em;
+		border-radius: 1em;
+		margin-right: 4px;
+	}
+}
+
+#title {
+	margin-top: 2rem;
+}

@@ -1,5 +1,6 @@
 ---
 layout: post
+author: crafter_anonyme
 title:  "Post avec une photo!"
 date:   2019-01-12 12:01:22 +0100
 categories: photos

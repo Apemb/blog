@@ -2,14 +2,26 @@
 layout: default
 ---
 
+{% assign page_author = page.author | default: "crafter_anonyme" %}
+{% assign author = site.data.authors[page_author] %}
+
 {% include site-header.html %}
 
-<main class="main  container">
+<main class="main container">
 
   <article class="article  article--post  content  typeset">
-
-    <h1>{{ page.title }}</h1>
+    
+    <p class="author">
+      <img src="/assets/{{ author.image }}" alt="enso">
+      <a href="{{ author.site }}">{{ author.name }}</a>
+      {%if author.twitter %}
+        (<a href="https://twitter.com/{{ author.twitter }}">@{{ author.twitter }}</a>)
+      {% endif %}
+      wrote this the <time datetime="{{page.date }}">{{ page.date | date_to_long_string }}</time>
+    </p>
     {% include post-meta.html %}
+
+    <h1 id="title">{{ page.title }}</h1>
     {{ content }}
 
     {% include nav-share.html %}

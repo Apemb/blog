@@ -1,8 +1,9 @@
 ---
 layout: post
+author: thomas_wickham
 title:  "Tips for Rust beginners"
 date:   2019-01-18 22:00:00 +0100
-categories: rust
+categories: rust coding
 ---
 
 As you may know, Rust is a pet peve of mine. I code in Rust since 2015 and I can say that I got my fair part of quirks, misunderstandings, and errors.
