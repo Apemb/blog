@@ -11,7 +11,7 @@ As you may know, Rust is one of my favorite tools. I've been writing code in Rus
 
 I also enjoy teaching Rust to my curious friends and colleagues. In this post, I'd like to share with you the usual tips I dispense for them to start with less hassle.
 
-_Thanks to Nitlelave for his multiple reviews._
+_Thanks to [Nitnelave](https://github.com/nitnelave) for his multiple reviews._
 
 
 
@@ -25,7 +25,7 @@ The Rust toolchain installer is named rustup, and it works so well I don't see a
 
 As you have rustup, you should use `rustup install stable` and work with Rust stable.
 
-Even if Rust nightly has a lot of bells and whistles don't give in to them. You are a beginner and the stable language is large enough. If you need something in nightly you probably are over-engineering your problem, want to [shave a yak](https://www.hanselman.com/blog/YakShavingDefinedIllGetThatDoneAsSoonAsIShaveThisYak.aspx), or misunderstood what you want to do. I encourage you to research your problem a step further and look for stable solutions.
+Even if Rust nightly has a lot of bells and whistles, don't give in to them. You are a beginner and the stable language is large enough. If you need something in nightly you probably are over-engineering your problem, want to [shave a yak](https://www.hanselman.com/blog/YakShavingDefinedIllGetThatDoneAsSoonAsIShaveThisYak.aspx), or misunderstood what you want to do. I encourage you to research your problem a step further and look for stable solutions.
 
 ### Use clippy
 
@@ -164,9 +164,9 @@ fn to_string(arg: &dyn ToString) -> String {
 
 
 
-So what's the difference ? Not much for your. In both case your function has access to the same methods. In both cases you don't know what is the original type.
+So what's the difference ? Not much for you. In both case your function has access to the same methods. In both cases you don't know what is the original type.
 
-For the compiler it's another story. The template way to write thing will be unrolled for each use of the function, and may help rustc to compute the lifetimes of your variables.
+For the compiler it's another story. The template-way to write things will be unrolled for each use of the function (this action is named _monomophisation_), and may help rustc compute the lifetimes of your variables.
 
 I tend to recommend to use templates as much as possible as they have few negative trade-offs and will make clearers and fewer errors.
 
@@ -214,7 +214,7 @@ impl Foo {
 
 
 
-`method0` is not a method, so don't forget to add the special `sefl` argument.
+`method0` is not a method, so don't forget to add the special `self` argument.
 
 `method1` is borrowing the instance for a read-only use of the attributes. Nothing to see here.
 
@@ -267,23 +267,80 @@ fn main() -> Result<(), Error> {
 
 ### Prefer Vec\<T\> rather than raw arrays
 
-They own their data, can grow, and as such are far easier to work with.
+They own their data, can grow, and as such are far easier to work with. And they have many many [handy methods](https://doc.rust-lang.org/std/vec/struct.Vec.html).
 
 Do I really need to expand ?
 
 ### Don't return an Iterator, a Vec is easier
 
-You may want to protif from the lazyness iterators gives you and do the same.
+You may want to use the powerful iterators and profit from all their functions (lazyness, composition, performance, zero-cost).
 
-The thing is, returning an iterator is an advanced topic. Try it for fun if you may, but it's not easy to deal to deal with the errors. Allocating a vector is probably fine.
+The thing is, returning an iterator is an advanced topic. Try it for fun if you may, but it's not easy to deal to deal with the errors. Allocating a vector is probably fine so you should try that first.
+
+
+
+Note that you can convert any Iterator to a Vector with:
+
+```rust
+let vector = some_iterator.collect()
+```
+
+And any vector to an iterator with the `.into_iter()`, `.iter()`, and `.iter_mut()` functions.
+
+
+
+### The difference between `.into_iter()`, `.iter()`, and `.iter_mut()`
+
+Do you remember the difference between `self`, `&self`, and `&mut self` in a method ? It's the same.
+
+Rust has the convention to name `into_` something that will take `self`, do nothing for `&self` (as it's the default), and `_mut` for `&mut self` . It's the same for the iterators.
+
+Note that the for loops consume iterators, so you should use the correct iterator over a vector.
+
+```rust
+// iterator `self` which consume the values
+vector.into_iter()
+      .map(|value| println!("{}", value))
+	  .collect();
+// this is strictly the same as:
+for value in vector {
+    println!("{}", value);
+}
+
+// iterator `&self` which takes by reference
+vector.iter()
+      .map(|value| println!("{}", value))
+	  .collect()
+// this is strictly the same as:
+for value in &vector {
+    println!("{}", value);
+}
+
+// iterator `&mut self` which takes by mutable reference
+vector.iter_mut()
+      .map(|value| println!("{}", value))
+	  .collect()
+// this is strictly the same as:
+for value in &mut vector {
+    println!("{}", value);
+}
+```
+
+
 
 ### Learn the From trait and the conversion methods
 
-As Rust is strongly typed, and types are easy to create. That's why you want to be abble to convert easily your data between types.
+Rust is strongly typed, and types are easy to create. That's why you want to be able to easily convert your data between types.
 
 [Documentation of the From trait](https://doc.rust-lang.org/std/convert/trait.From.html)
 
-[expand on the handy methods, automatic Into, what to from and what to Into]
+There is some nice things with these traits like:
+
+### Try and experiment with the Rust Playground
+
+Rust has [a very nice interactive Playground](https://play.rust-lang.org/). You can use it to try things and tests dummy design that you think should work (or fail).
+
+I often try to reduce my design errors with a sample code in the playground, then try to work around the issue.
 
 
 
