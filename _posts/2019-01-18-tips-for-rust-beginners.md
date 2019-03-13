@@ -13,8 +13,6 @@ I also enjoy teaching Rust to my curious friends and colleagues. In this post, I
 
 _Thanks to [Nitnelave](https://github.com/nitnelave) for his multiple reviews._
 
-
-
 ## General Tips
 
 ### Use Rustup
@@ -49,7 +47,7 @@ Do it yourself, you will learn something on the way.
 
 ### Red Green Refactor: do TDD
 
-Rust comes with [integrated unit testing](https://doc.rust-lang.org/book/ch11-01-writing-tests.html). You can and should abuse it ! 
+Rust comes with [integrated unit testing](https://doc.rust-lang.org/book/ch11-01-writing-tests.html). You can and should abuse it !
 
 I have talked about TDD in Rust in Zurich's RustFest 2017: [talk](https://www.youtube.com/watch?v=U3F7uAOCjEo), [slides](https://slides.com/thomaswickham/efficient-tdd-in-rust).
 
@@ -71,11 +69,7 @@ mod tests {
 }
 ```
 
-
-
 To learn more, let's look at what the [Rust book says about tests](https://doc.rust-lang.org/1.30.0/book/second-edition/ch11-03-test-organization.html).
-
-
 
 ## Design tips
 
@@ -84,8 +78,6 @@ To learn more, let's look at what the [Rust book says about tests](https://doc.r
 This one is simple. The`Debug` trait (kinda like interfaces) is useful for debug printf, [the `dbg!` macro](https://doc.rust-lang.org/std/macro.dbg.html), asserts, errors, and libraries. You should always, always derive it. Especially if you make a library, your users will need it to understand what happens.
 
 [See the doc for more infos](https://doc.rust-lang.org/std/fmt/trait.Debug.html).
-
-
 
 ### Better be too open than too private
 
@@ -115,13 +107,13 @@ _NOTE: You can make a `String` from a `&str` with `String::from(other_string)`._
 
 You don't want to mutate the input arguments, right ? Then it's probably safe to take `&str` as input arguments.
 
-But unless you know what you are doing, you shouldn't return a `&str`. Use `String` as return type so that 
+But unless you know what you are doing, you shouldn't return a `&str`. Use `String` as return type so that
 
-If you want to know why [this advanced explanation can help](https://stackoverflow.com/questions/23981391/how-exactly-does-the-callstack-work). 
+If you want to know why [this advanced explanation can help](https://stackoverflow.com/questions/23981391/how-exactly-does-the-callstack-work).
 
 ### Use clone() at will !
 
-Don't be afraid to `.clone()` away your borrowing errors. 
+Don't be afraid to `.clone()` away your borrowing errors.
 
 It's really not an issue as Rust code tends to be very sensible in term of memory consumption. If you measure that your memory consumption is high, you can find the hot spot and optimize it later.
 
@@ -162,8 +154,6 @@ fn to_string(arg: &dyn ToString) -> String {
 }
 ```
 
-
-
 So what's the difference ? Not much for you. In both case your function has access to the same methods. In both cases you don't know what is the original type.
 
 For the compiler it's another story. The template-way to write things will be unrolled for each use of the function (this action is named _monomophisation_), and may help rustc compute the lifetimes of your variables.
@@ -196,8 +186,6 @@ Or make the type known at compile-time with a template:
 fn my_func1<Array>(array: Array) {}
 ```
 
-
-
 ### Methods: first `&self`, then `&mut self`, then `self`
 
 When you are making a method:
@@ -205,14 +193,12 @@ When you are making a method:
 ```rust
 struct Foo;
 impl Foo {
-    fn method0() {} 		 // 0: no self, it's a static function
+    fn method0() {}          // 0: no self, it's a static function
     fn method1(&self) {}     // 1: &self: method borrowing by reference
     fn method2(&mut self) {} // 2: &mut self: method borrowing mutably
     fn method3(self) {}      // 3: self: method consuming itself
 }
 ```
-
-
 
 `method0` is not a method, so don't forget to add the special `self` argument.
 
@@ -231,9 +217,7 @@ If you are safe-gating a simple primitive type, you should use [the atomic packa
 
 [expand the description why is it fighting the borrowck ? how to solve ?]
 
-
-
-### Atomics (std::sync::atomic) are great. Use them at will 
+### Atomics (std::sync::atomic) are great. Use them at will
 
 Atomics are special types that are supported by all the classic CPU and provide special garnatees around thread-safety.
 
@@ -258,12 +242,10 @@ fn double_arg(mut argv: env::Args) -> Result<i32, String> {
 }
 
 fn main() -> Result<(), Error> {
-	let n = double_arg(env::args())?;
-	println!("{}", n)
+    let n = double_arg(env::args())?;
+    println!("{}", n)
 }
 ```
-
-
 
 ### Prefer Vec\<T\> rather than raw arrays
 
@@ -277,8 +259,6 @@ You may want to use the powerful iterators and profit from all their functions (
 
 The thing is, returning an iterator is an advanced topic. Try it for fun if you may, but it's not easy to deal to deal with the errors. Allocating a vector is probably fine so you should try that first.
 
-
-
 Note that you can convert any Iterator to a Vector with:
 
 ```rust
@@ -286,8 +266,6 @@ let vector = some_iterator.collect()
 ```
 
 And any vector to an iterator with the `.into_iter()`, `.iter()`, and `.iter_mut()` functions.
-
-
 
 ### The difference between `.into_iter()`, `.iter()`, and `.iter_mut()`
 
@@ -301,7 +279,7 @@ Note that the for loops consume iterators, so you should use the correct iterato
 // iterator `self` which consume the values
 vector.into_iter()
       .map(|value| println!("{}", value))
-	  .collect();
+      .collect();
 // this is strictly the same as:
 for value in vector {
     println!("{}", value);
@@ -310,7 +288,7 @@ for value in vector {
 // iterator `&self` which takes by reference
 vector.iter()
       .map(|value| println!("{}", value))
-	  .collect()
+      .collect()
 // this is strictly the same as:
 for value in &vector {
     println!("{}", value);
@@ -319,14 +297,12 @@ for value in &vector {
 // iterator `&mut self` which takes by mutable reference
 vector.iter_mut()
       .map(|value| println!("{}", value))
-	  .collect()
+      .collect()
 // this is strictly the same as:
 for value in &mut vector {
     println!("{}", value);
 }
 ```
-
-
 
 ### Learn the From trait and the conversion methods
 
@@ -342,8 +318,6 @@ Rust has [a very nice interactive Playground](https://play.rust-lang.org/). You 
 
 I often try to reduce my design errors with a sample code in the playground, then try to work around the issue.
 
-
-
 # Wrapping it up
 
 There are many other tips I could give, but that would be for another article.
@@ -351,29 +325,3 @@ There are many other tips I could give, but that would be for another article.
 Please remember to keep things simple and don’t add imaginary requirements. Indeed, performance is cool, but how do you know there is a problem if you can’t run your program ? How do you know that the code your are improving gives a better performance if you can’t measure it ?
 
 In Rust, “_done is better than perfect_” is a mantra to follow. Especially with all the shiny features the language can provide.
-
-
-
-
-
-***
-
-
-
-Other topics to expand to:
-
-Understand Iterators
-Lazy
-Termination methods
-Scope retention —> hard to understand
-Use closures as primitives, not as a trait
-As argument, always templated. No choice
-Learn when too flee away
-Trait for
-Double borrow
-Use <S: Into<String>> for string genericity
-Performance can be dealt with later with ease when it works. It can destroy your code if it don’t
-Testing tips
-Declare your own traits for mocking and implement them in a dummy struct for your tests
-Cursor<T> on a Vec or on a String emulate very well a Read or a Write
-Tests helpers for simplifying setups and assertions
