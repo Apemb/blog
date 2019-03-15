@@ -47,7 +47,7 @@ Do it yourself, you will learn something on the way.
 
 ### Red Green Refactor: do TDD
 
-Rust comes with [integrated unit testing](https://doc.rust-lang.org/book/ch11-01-writing-tests.html). You can and should abuse it !
+Rust comes with [integrated unit testing](https://doc.rust-lang.org/book/ch11-01-writing-tests.html). You can and should abuse it!
 
 I have talked about TDD in Rust in Zurich's RustFest 2017: [talk](https://www.youtube.com/watch?v=U3F7uAOCjEo), [slides](https://slides.com/thomaswickham/efficient-tdd-in-rust).
 
@@ -81,11 +81,11 @@ This one is simple. The`Debug` trait (kinda like interfaces) is useful for debug
 
 ### Better be too open than too private
 
-Too often I see a library with private types, or private constructors. Why not ? After all, that's why we have a privacy system !
+Too often I see a library with private types, or private constructors. Why not? After all, that's why we have a privacy system!
 
-Let's ask the question: what do you lose by opening too many types ? You could have leaky abstractions, broken contracts. Not great, but any non-mature library will have it anyway. With documentation, builders, and code contracts you can avoid it quite easily.
+Let's ask the question: what do you lose by opening too many types? You could have leaky abstractions, broken contracts. Not great, but any non-mature library will have it anyway. With documentation, builders, and code contracts you can avoid it quite easily.
 
-What do you get by having too many private types ? Untestable code. Broken documentation for your users. Undebuggable magic which may panic but that I can't see. The trade-off is far worse, so there is my easy choice.
+What do you get by having too many private types? Untestable code. Broken documentation for your users. Undebuggable magic which may panic but that I can't see. The trade-off is far worse, so there is my easy choice.
 
 In doubt: be public. It's no big deal to open your types.
 
@@ -95,23 +95,23 @@ In doubt: be public. It's no big deal to open your types.
 
 This one is a massive tip. There is two types for string representation, which often confuse beginners. Often, they assume that `&str` is the simpler and so should be the default. _It's the reverse: `String` is simpler and should be the default choice._
 
-What's the difference, would you say ? `String` is the owned and allocated version of `&str`. When the former resides in RAM, the latter can be anywhere: it can be a reference to immutable static data on a file, on a segment of read-only memory, or a pointer to a foreign callee. You don't know, you can't touch it, only see it. Thus, you can't do much with it, and the compiler will watch you closely.
+What's the difference, would you say? `String` is the owned and allocated version of `&str`. When the former resides in RAM, the latter can be anywhere: it can be a reference to immutable static data on a file, on a segment of read-only memory, or a pointer to a foreign callee. You don't know, you can't touch it, only see it. Thus, you can't do much with it, and the compiler will watch you closely.
 
 Another important thing is _you won't lose any features by using a String_. It's even the opposite: allocating a `String` gives you more power as now you can change your string, pass it around.
 
-Use `String` first. Then, when your code begin to stabilize, you will be able to spot easy replacements from `String` to `&str` without loss (it will be easy: does it compiles ?).
+Use `String` first. Then, when your code begin to stabilize, you will be able to spot easy replacements from `String` to `&str` without loss (it will be easy: does it compiles?).
 
 _NOTE: You can make a `String` from a `&str` with `String::from(other_string)`._
 
 ### &str for Input, String for output
 
-You don't want to mutate the input arguments, right ? Then it's probably safe to take `&str` as input arguments.
+You don't want to mutate the input arguments, right? Then it's probably safe to take `&str` as input arguments.
 
 But unless you know what you are doing, you shouldn't return a `&str`. Use `String` as return type so that
 
 If you want to know why [this advanced explanation can help](https://stackoverflow.com/questions/23981391/how-exactly-does-the-callstack-work).
 
-### Use clone() at will !
+### Use clone() at will!
 
 Don't be afraid to `.clone()` away your borrowing errors.
 
@@ -123,7 +123,7 @@ It's really not an issue as Rust code tends to be very sensible in term of memor
 
 `&` means that it's an immutable reference and the `'a` is a name. The name of the lifetime of this other struct you want to look into. This name is useful to the compiler to prove that your struct instances will never outlive the struct they want to look into.
 
-What's the matter ? Simple: if one of your struct holds a reference to data of another struct and it outlives the other structs (meaning that the other struct has been freed), it would mean that the other struct’s data is now garbage, something completely different. We do not want that. That's called a “_Use after free_” error and this often means at least a segfault of the program (immediate termination from the kernel because of a bad memory access). In the worst cases, your program _does not_ segfault and then it may be open to an exploitation by a malicious code.
+What's the matter? Simple: if one of your struct holds a reference to data of another struct and it outlives the other structs (meaning that the other struct has been freed), it would mean that the other struct’s data is now garbage, something completely different. We do not want that. That's called a “_Use after free_” error and this often means at least a segfault of the program (immediate termination from the kernel because of a bad memory access). In the worst cases, your program _does not_ segfault and then it may be open to an exploitation by a malicious code.
 
 The Rust compiler prevents these kind of errors by tracking lifetimes, and these `'a` are names of the lifetimes Rust tracks. The less you see them, the simpler your life is.
 
@@ -154,7 +154,7 @@ fn to_string(arg: &dyn ToString) -> String {
 }
 ```
 
-So what's the difference ? Not much for you. In both case your function has access to the same methods. In both cases you don't know what is the original type.
+So what's the difference? Not much for you. In both case your function has access to the same methods. In both cases you don't know what is the original type.
 
 For the compiler it's another story. The template-way to write things will be unrolled for each use of the function (this action is named _monomophisation_), and may help rustc compute the lifetimes of your variables.
 
@@ -215,7 +215,7 @@ You may need them, but most probably you are making an unsafe design and are cur
 
 If you are safe-gating a simple primitive type, you should use [the atomic package](https://doc.rust-lang.org/std/sync/atomic/) which will give you a thread-safe API over the data.
 
-[expand the description why is it fighting the borrowck ? how to solve ?]
+[expand the description why is it fighting the borrowck? how to solve?]
 
 ### Atomics (std::sync::atomic) are great. Use them at will
 
@@ -251,7 +251,7 @@ fn main() -> Result<(), Error> {
 
 They own their data, can grow, and as such are far easier to work with. And they have many many [handy methods](https://doc.rust-lang.org/std/vec/struct.Vec.html).
 
-Do I really need to expand ?
+Do I really need to expand?
 
 ### Don't return an Iterator, a Vec is easier
 
@@ -269,7 +269,7 @@ And any vector to an iterator with the `.into_iter()`, `.iter()`, and `.iter_mut
 
 ### The difference between `.into_iter()`, `.iter()`, and `.iter_mut()`
 
-Do you remember the difference between `self`, `&self`, and `&mut self` in a method ? It's the same.
+Do you remember the difference between `self`, `&self`, and `&mut self` in a method? It's the same.
 
 Rust has the convention to name `into_` something that will take `self`, do nothing for `&self` (as it's the default), and `_mut` for `&mut self` . It's the same for the iterators.
 
@@ -322,6 +322,6 @@ I often try to reduce my design errors with a sample code in the playground, the
 
 There are many other tips I could give, but that would be for another article.
 
-Please remember to keep things simple and don’t add imaginary requirements. Indeed, performance is cool, but how do you know there is a problem if you can’t run your program ? How do you know that the code your are improving gives a better performance if you can’t measure it ?
+Please remember to keep things simple and don’t add imaginary requirements. Indeed, performance is cool, but how do you know there is a problem if you can’t run your program? How do you know that the code your are improving gives a better performance if you can’t measure it?
 
 In Rust, “_done is better than perfect_” is a mantra to follow. Especially with all the shiny features the language can provide.
