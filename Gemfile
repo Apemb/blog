@@ -25,7 +25,6 @@ group :jekyll_plugins do
   gem 'jekyll-seo-tag', "~> 2.5"
   gem "jekyll-sitemap", "~> 0.13"
   gem "jekyll-mentions", "~> 1.2"
-  gem "jekyll-paginate", "~> 1.1"
   gem "jekyll-redirect-from", "~> 0.12"
   gem "jekyll-default-layout", "~> 0.1"
   gem "jemoji", "~> 0.9"

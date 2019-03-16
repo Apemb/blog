@@ -17,18 +17,15 @@ title: Crafter's Circle
 encoding: utf-8 # Make sure the encoding is right
 # email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+  This is a blog about crafting software, the software industry, and anything
+  that we like to speak about.
+  This blog is written by Antoine BOILEAU, Christophe THIBAUT, and Thomas WICKHAM.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://crafterscirle.io" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
 # github_username:  jekyll
 css_inline: true # Will insert all styles into a single <style> block in the <head> element and remove the style <link> reference
 
-# Gem settings
-paginate: 10 # jekyll-paginate > items per page
-paginate_path: blog/page:num # jekyll-paginate > blog page
 # jekyll-mentions: https://twitter.com # jekyll-mentions > service used when @replying
 # twitter:
 #   username: apemb # jekyll-seo-tag > Owners twitter username
@@ -58,7 +55,7 @@ navigation_header:
   Home: /
   # Elements: /elements/
   Blog: /blog/
-  # Categories: /categories/
+  Categories: /categories/
   # Search: /search/
 
 navigation_footer:
@@ -91,7 +88,6 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-mentions
-  - jekyll-paginate
   - jekyll-redirect-from
   - jekyll-default-layout
   - jekyll-feed
