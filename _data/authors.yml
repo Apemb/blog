@@ -6,8 +6,22 @@ crafter_anonyme:
   image: enso.png
 
 thomas_wickham:
-  name: Thomas Wickham
+  name: Thomas WICKHAM
   email: thomas@cafe-craft.fr
   site: https://www.cafe-craft.fr
   twitter: mackwic
   image: twi_mini_hc.jpg
+
+christohpe_thibaut:
+  name: Christophe THIBAUT
+  email: plop@contact.com
+  site: https://crafterscircle.io/
+  twitter: Tof_
+  image: enso.png
+
+antoine_boileau:
+  name: Antoine BOILEAU
+  email: plop@contact.com
+  site: https://crafterscircle.io/
+  twitter: antoineboileau
+  image: enso.png
