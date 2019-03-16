@@ -24,7 +24,6 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://crafterscirle.io" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
 # github_username:  jekyll
-css_inline: true # Will insert all styles into a single <style> block in the <head> element and remove the style <link> reference
 
 # jekyll-mentions: https://twitter.com # jekyll-mentions > service used when @replying
 # twitter:

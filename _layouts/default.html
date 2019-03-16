@@ -1,69 +1,65 @@
 <!DOCTYPE html>
 <html lang="{{ site.lang | default: "fr" }}">
 
-  <head>
-    <!-- General meta -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+  <!-- General meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    {% if page.indexing == false %}
-      <meta name="robots" content="noindex">
-    {% endif %}
+  {% if page.indexing == false %}
+  <meta name="robots" content="noindex">
+  {% endif %}
 
-    {% if page.collectionpage %}
-      {% seo title=false %}
+  {% if page.collectionpage %}
+  {% seo title=false %}
 
-      {% assign collectiondata = site.collections | where: "label", page.collectionpage | first %}
-      <title>{{ collectiondata.title }} - {{ site.title }}</title>
-      <meta property="og:title" content="{{ collectiondata.title }}">
-      <meta name="description" content="{{ collectiondata.description }}">
-      <meta property="og:description" content="{{ collectiondata.description }}">
-    {% else %}
-      {% seo %}
-    {% endif %}
+  {% assign collectiondata = site.collections | where: "label", page.collectionpage | first %}
+  <title>{{ collectiondata.title }} - {{ site.title }}</title>
+  <meta property="og:title" content="{{ collectiondata.title }}">
+  <meta name="description" content="{{ collectiondata.description }}">
+  <meta property="og:description" content="{{ collectiondata.description }}">
+  {% else %}
+  {% seo %}
+  {% endif %}
 
-    <link rel="apple-touch-icon" sizes="57x57" href="/assets/favicons/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/assets/favicons/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/assets/favicons/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/assets/favicons/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/assets/favicons/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/assets/favicons/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/assets/favicons/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/assets/favicons/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicons/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/assets/favicons/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicons/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicons/favicon-16x16.png">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/assets/favicons/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+  <link rel="apple-touch-icon" sizes="57x57" href="/assets/favicons/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/assets/favicons/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/assets/favicons/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/assets/favicons/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/assets/favicons/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/assets/favicons/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/assets/favicons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/assets/favicons/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicons/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicons/favicon-16x16.png">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/assets/favicons/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
 
-    <link rel="manifest" href="{{ "/manifest.json" | relative_url }}">
-    <meta name="theme-color" content="{{ site.manifest.theme_color | default: '#242e2b' }}"/>
+  <link rel="manifest" href="{{ "/manifest.json" | relative_url }}">
+  <meta name="theme-color" content="{{ site.manifest.theme_color | default: '#242e2b' }}" />
 
 
-    {% if site.css_inline == true %}
-      {% include site-styles.html %}
-    {% else %}
-      <link rel="stylesheet" href="{{ "/assets/styles.css" | relative_url }}">
-    {% endif %}
-    <link rel="stylesheet" href="{{ "/assets/custom.css" | relative_url }}">
-    <link rel="stylesheet" href="{{ "/assets/syntax2.css" | relative_url }}">
+  {% include site-styles.html %}
+  <link rel="stylesheet" href="{{ "/assets/code-style-monokai.css" | relative_url }}">
 
-    {% if site.avatarurl %}{% include site-favicons.html %}{% endif %}
+  {% if site.avatarurl %}{% include site-favicons.html %}{% endif %}
 
-    {% if site.google_analytics %}{% include site-analytics.html %}{% endif %}
+  {% if site.google_analytics %}{% include site-analytics.html %}{% endif %}
 
-    {% include site-before-start.html %}
-  </head>
+  {% include site-before-start.html %}
+</head>
 
-  <body class="layout-{{ page.layout }}{% if page.title %}  {{ page.title | slugify }}{% endif %}">
-    {% include site-icons.svg %}
+<body class="layout-{{ page.layout }}{% if page.title %}  {{ page.title | slugify }}{% endif %}">
+  {% include site-icons.svg %}
 
-    {{ content }}
+  {{ content }}
 
-    {% if site.service_worker != false %}{% include site-sw.html %}{% endif %}
+  {% if site.service_worker != false %}{% include site-sw.html %}{% endif %}
 
-    {% include site-before-end.html %}
-  </body>
+  {% include site-before-end.html %}
+</body>
+
 </html>
