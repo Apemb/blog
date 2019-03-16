@@ -1,5 +1,6 @@
 
 crafter_anonyme:
+  hidden: true
   name: Crafter Anonyme
   email: contact@crafterscircle.io
   site: https://crafterscircle.io
@@ -11,17 +12,26 @@ thomas_wickham:
   site: https://www.cafe-craft.fr
   twitter: mackwic
   image: twi_mini_hc.jpg
+  image_large: twi.jpg
 
-christohpe_thibaut:
+christophe_thibaut:
   name: Christophe THIBAUT
   email: plop@contact.com
   site: https://crafterscircle.io/
   twitter: Tof_
   image: enso.png
+  image_large: enso.png
 
 antoine_boileau:
   name: Antoine BOILEAU
-  email: plop@contact.com
+  email: antoine@boileau.io
   site: https://crafterscircle.io/
   twitter: antoineboileau
   image: enso.png
+  image_large: enso.png
+
+# XXX: I don't know how to make an automatic list of authors
+all:
+  - thomas_wickham
+  - antoine_boileau
+  - christophe_thibaut

@@ -53,10 +53,9 @@ defaults:
 # Site navigation
 navigation_header:
   Home: /
-  # Elements: /elements/
   Blog: /blog/
-  Categories: /categories/
-  # Search: /search/
+  Authors: /authors/
+  #Categories: /categories/
 
 navigation_footer:
   Created by David Darnes: https://darn.es
@@ -82,6 +81,7 @@ kramdown:
   input: GFM
   syntax_highlighter: rouge
 theme: alembic-jekyll-theme
+
 plugins:
   - jekyll-toc
   - jekyll-feed
